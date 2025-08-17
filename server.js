@@ -16,7 +16,7 @@ app.use(compression());
 app.use(express.json({ limit: "20mb" }));
 
 app.use(basicAuth({
-  users: { "admin": "yourpassword" }, // change username & password
+  users: { "ipower": "ipowerdragon" }, // change username & password
   challenge: true, // shows browser login popup
   unauthorizedResponse: "Access denied"
 }));
@@ -3846,3 +3846,4 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
