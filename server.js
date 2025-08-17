@@ -1,3 +1,6 @@
+import basicAuth from "express-basic-auth";
+import express from "express";
+
 require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
@@ -10,8 +13,15 @@ const app = express();
 app.use(cors()); // allow all origins, all methods by default
 
 app.use(compression());
+
 // Increase limit to, say, 20MB
 app.use(express.json({ limit: "20mb" }));
+
+app.use(basicAuth({
+  users: { "admin": "yourpassword" }, // change username & password
+  challenge: true, // shows browser login popup
+  unauthorizedResponse: "Access denied"
+}));
 
 app.use((req, res, next) => {   
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -2375,7 +2385,6 @@ app.put('/brand-check/:id', (req, res) => {
 app.get('/model', (req, res) => {
     const search = `%${req.query.search || ''}%`
     const limit = Number(req.query.limit || 1000000);
-    console.log(req.query.limit)
     const sql = 'SELECT * FROM model WHERE name LIKE ? ORDER BY id DESC LIMIT ?';
     db.query(sql, [search, limit], (err, result) => {
         if (err) {console.error(err); return res.status(500)}
