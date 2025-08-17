@@ -26,11 +26,11 @@ app.use(express.static("public")); // Serve frontend files
 // MySQL Connection Pool
 const db = mysql.createPool({
     connectionLimit: 10, // or adjust for your number of users
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT, 
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: "trolley.proxy.rlwy.net",
+    port: 39950, 
+    user: 'root,
+    password: "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
+    database: 'railway,
     multipleStatements: true // ✅ add this
   });
   
@@ -3826,4 +3826,5 @@ app.delete('/del-transls', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
+
 });
