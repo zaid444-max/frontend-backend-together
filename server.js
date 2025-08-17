@@ -28,9 +28,9 @@ const db = mysql.createPool({
     connectionLimit: 10, // or adjust for your number of users
     host: "trolley.proxy.rlwy.net",
     port: 39950, 
-    user: 'root,
+    user: 'root',
     password: "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
-    database: 'railway,
+    database: 'railway',
     multipleStatements: true // ✅ add this
   });
   
@@ -3828,3 +3828,4 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
