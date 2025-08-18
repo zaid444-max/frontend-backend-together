@@ -52,6 +52,11 @@ const db = mysql.createPool({
     database: 'railway',
     multipleStatements: true // ✅ add this
 });
+
+// ✅ Whenever a new connection is made, set the timezone
+db.on("connection", (connection) => {
+    connection.query("SET time_zone = '+03:00'");
+});
   
 console.log('MySQL pool initialized');
 
@@ -3846,4 +3851,5 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
 
