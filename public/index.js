@@ -30,7 +30,7 @@ if (topbarButt) {
 //const serverIP = 'ipower-backend-production.up.railway.app';
 //const serverIP = `http://${window.location.hostname}:3000`;
 const serverIP = '';
-//const serverIP = 'pos.biggroups.org';
+//const serverIP = 'pos.biggroups.org';s
 
 const returnIcon = document.querySelector('.fa-arrow-left');
 returnIcon?.addEventListener('click', function() {
@@ -66,5 +66,4 @@ function checkPassword(href) {
   const userInp = prompt('Enter password: ');
   userInp === '0.0.0.' ? window.location.href = href: 
   alert('The password is incorrect');
-
 }
