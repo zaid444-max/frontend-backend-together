@@ -12,7 +12,7 @@ window.location.reload();
 });
 
 addCustomerButt.addEventListener('click', async () => {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/customers-and-get`, {
+  const response = await fetch(`${serverIP}/customers-and-get`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -40,7 +40,7 @@ function useLoadingIcon() {
 
 async function fetchCustomersOnce() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/customers`);
+  const response = await fetch(`${serverIP}/customers`);
   const customers = await response.json();
   fetchCustomers(customers);
 }
@@ -81,7 +81,7 @@ function fetchCustomers(customers) {
     priceLevelSelect.addEventListener('change', async (e) => {
       const itemId = e.target.closest('tr').querySelector('.customer-id-td').innerHTML;
       const selectValue = priceLevelSelect.value;
-      await fetch(`${htt}${slashes}${serverIP}${port}/customers/${(itemId)}`, {
+      await fetch(`${serverIP}/customers/${(itemId)}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body:
@@ -98,7 +98,7 @@ function fetchCustomers(customers) {
 
 async function deleteBrand(event) {
   const customerId = Number(event.target.closest('tr').querySelector('.customer-id-td').innerHTML);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/customers-checkInv/${customerId}`, {method: 'DELETE'});
+  const response = await fetch(`${serverIP}/customers-checkInv/${customerId}`, {method: 'DELETE'});
   const delResp = await response.json();
   if(delResp.invoice) {
     Toastify({
@@ -148,7 +148,7 @@ function editCustomer(event, name) {
     const id = event.target.closest('tr').querySelector('.customer-id-td').innerHTML;
     if (oldValue === newInp.value.trim()) {brandSpan.innerHTML = oldValue; return;}
     brandSpan.innerHTML = newInp.value.trim() || oldValue;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/customers-check/${id}?name=${name}&newVal=${newInp.value.trim().toLowerCase()}`, {
+    const response = await fetch(`${serverIP}/customers-check/${id}?name=${name}&newVal=${newInp.value.trim().toLowerCase()}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -229,7 +229,7 @@ function updateDelFee(event) {
   newInp.addEventListener('blur', async function () {
   if (newInp.value.trim() === '' || isNaN(newInp.value.trim())){ rowETarget.innerHTML = oldVal; return};
   const id = rowETarget.closest('tr').querySelector('.customer-id-td').innerHTML;
-  await fetch(`${htt}${slashes}${serverIP}${port}/customers/${id}`, {
+  await fetch(`${serverIP}/customers/${id}`, {
     method:'PUT',
     headers:{'Content-Type': 'application/json'},
     body: JSON.stringify({

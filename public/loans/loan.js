@@ -35,7 +35,7 @@ async function fetchCustomers() {
     <div class="spinner"></div>
   </div>
   `;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/customers-Loans`, { cache: 'no-store' });
+  const response = await fetch(`${serverIP}/customers-Loans`, { cache: 'no-store' });
   const result = await response.json();
   if (thisFetchId !== latestFetchId) return;
   tableTbody.innerHTML = '';

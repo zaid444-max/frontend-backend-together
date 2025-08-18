@@ -12,7 +12,7 @@ window.location.reload();
 });
 
 addBrandButt.addEventListener('click', async () => {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/model-get?search=${searchInp.value.trim()}`, {
+  const response = await fetch(`${serverIP}/model-get?search=${searchInp.value.trim()}`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -34,7 +34,7 @@ function useLoadingIcon() {
 
 async function fetchModelsOnce() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/model?limit=${100}&search=${searchInp.value.trim()}`);
+  const response = await fetch(`${serverIP}/model?limit=${100}&search=${searchInp.value.trim()}`);
   const models = await response.json();
   fetchModels(models);
 }
@@ -60,7 +60,7 @@ async function fetchModels(models) {
 
 async function deleteBrand(event) {
   const id = parseInt(event.target.closest('tr').querySelector('.brand-id-td').innerHTML);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/model-get/${id}?search=${searchInp.value.trim()}`, {method: 'DELETE'});
+  const response = await fetch(`${serverIP}/model-get/${id}?search=${searchInp.value.trim()}`, {method: 'DELETE'});
   const selResp = await response.json();
   if (selResp.model === 'exists')
     return Toastify({
@@ -119,7 +119,7 @@ function editModel(event) {
     const newName = newInp.value.trim().toLocaleLowerCase();
     brandSpan.innerHTML = newInp.value.trim() || oldValue;
     const id = event.target.closest('tr').querySelector('.brand-id-td').innerHTML;
-    const repsonse = await fetch(`${htt}${slashes}${serverIP}${port}/model-check/${id}?newName=${newName}`, {
+    const repsonse = await fetch(`${serverIP}/model-check/${id}?newName=${newName}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

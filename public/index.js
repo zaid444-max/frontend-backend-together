@@ -28,12 +28,9 @@ if (topbarButt) {
 }
 
 //const serverIP = 'ipower-backend-production.up.railway.app';
-//const serverIP = window.location.hostname;
-const serverIP = '';
+const serverIP = `http://${window.location.hostname}:3000`;
+//const serverIP = '';
 //const serverIP = 'pos.biggroups.org';
-const port = '';
-const htt = '';
-const slashes = '';  
 
 const returnIcon = document.querySelector('.fa-arrow-left');
 returnIcon?.addEventListener('click', function() {

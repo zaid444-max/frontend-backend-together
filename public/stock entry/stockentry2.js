@@ -63,7 +63,7 @@ stockentryTableTbody.addEventListener('click', async (e) => {
       },
     });
     if (result.isConfirmed) {
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-updateAndDeleteStock?stockInvId=${invoiceId}`, {method: 'DELETE'});
+      const response = await fetch(`${serverIP}/items-updateAndDeleteStock?stockInvId=${invoiceId}`, {method: 'DELETE'});
       const invoResp = await response.json();
       if (invoResp.used === 'used') {
         return Toastify({
@@ -144,7 +144,7 @@ async function fethcStockInvs() {
   const thisFetchId = ++latestFetchId;
   useLoadingIcon();
   const searVal = searchInp.value.trim().toLocaleLowerCase();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-items?searVal=${searVal}`);
+  const response = await fetch(`${serverIP}/stockentinvs-items?searVal=${searVal}`);
   const stockResp = await response.json();
   if (thisFetchId !== latestFetchId) return;
   stockentryTableTbody.innerHTML = '';
@@ -236,7 +236,7 @@ document.querySelectorAll('a').forEach(link => {
 
 searchInp.addEventListener('keydown', async function(e) {
   if (!(e.key === 'Enter' && e.shiftKey)) return;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/replaceNewStockInvs`);
+  const response = await fetch(`${serverIP}/replaceNewStockInvs`);
   const getRes = await response.json();
   const success = getRes.success;
   if (success) alert('All Done')

@@ -12,7 +12,7 @@ window.addEventListener('pageshow', (event) => {
 });
 
 addCustomerButt.addEventListener('click', async () => {
-  const response  = await fetch(`${htt}${slashes}${serverIP}${port}/workers-and-get`, {
+  const response  = await fetch(`${serverIP}/workers-and-get`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -36,7 +36,7 @@ function useLoadingIcon() {
 
 async function fetchDeliveriesOnce() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/workers`);
+  const response = await fetch(`${serverIP}/workers`);
   const workers = await response.json();
   fetchCustomers(workers);
 }
@@ -67,7 +67,7 @@ async function fetchCustomers(workers) {
 
 async function deleteBrand(event) {
   const workerId = Number(event.target.closest('tr').querySelector('.customer-id-td').innerHTML);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/workers-checkInv/${workerId}`, {method: 'DELETE'});
+  const response = await fetch(`${serverIP}/workers-checkInv/${workerId}`, {method: 'DELETE'});
   const delResp = await response.json();
   if (delResp.invoice) {
     Toastify({
@@ -116,7 +116,7 @@ function editCustomer(event, name) {
     const id = event.target.closest('tr').querySelector('.customer-id-td').innerHTML;
     if (oldValue === newInp.value.trim()) {brandSpan.innerHTML = oldValue;return}
     brandSpan.innerHTML = newInp.value.trim() || oldValue;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/workers-check/${id}?name=${name}&newVal=${newInp.value.trim().toLowerCase()}`, {
+    const response = await fetch(`${serverIP}/workers-check/${id}?name=${name}&newVal=${newInp.value.trim().toLowerCase()}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

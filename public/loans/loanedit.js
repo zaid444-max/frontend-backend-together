@@ -45,7 +45,7 @@ const handshakeIcon = document.querySelector('.fa-handshake');
 handshakeIcon.addEventListener('click', async () => {
   isInvoiceInfAdded = false
   if (isHeld) return;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-and-get?curCustId=${currentCustomerId}&amount=0`, {
+  const response = await fetch(`${serverIP}/loans-and-get?curCustId=${currentCustomerId}&amount=0`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -65,7 +65,7 @@ handshakeIcon.addEventListener('mousedown', function() {
   isHeld = false;
   holdTimer = setTimeout(async () => {
     isHeld = true;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-and-get-all?curCustId=${currentCustomerId}`, {
+    const response = await fetch(`${serverIP}/loans-and-get-all?curCustId=${currentCustomerId}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -93,7 +93,7 @@ handshakeIcon.addEventListener('mouseleave', function() {
 handshakeIcon.addEventListener('touchstart', function() {
   holdTimer = setTimeout(async () => {
     isHeld = true;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-and-get-all?curCustId=${currentCustomerId}`, {
+    const response = await fetch(`${serverIP}/loans-and-get-all?curCustId=${currentCustomerId}`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -129,7 +129,7 @@ async function fetchLoansOnce() {
   </div>
   `
   let searVal = searchinp.value.trim().toLowerCase();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-SelPosInvs/${currentCustomerId}?searVal=${searVal}`);
+  const response = await fetch(`${serverIP}/loans-SelPosInvs/${currentCustomerId}?searVal=${searVal}`);
   const getresp = await response.json();
   const loans = getresp.loans;
   const workers = getresp.workers;
@@ -202,7 +202,7 @@ function fetchLoans(loans) {
     newRow.querySelector('.paid-checkbox').addEventListener('change', async function() {
       if (newRow.style.backgroundColor !== '') return;
       if (newRow.querySelector('.amount-td').innerHTML.includes('-')) {this.checked = false; return alert(`can't do that on paid loan.`)}
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/payLoan/${id}?checkBox=${this.checked}&resetter=${setWorker()}`);
+      const response = await fetch(`${serverIP}/payLoan/${id}?checkBox=${this.checked}&resetter=${setWorker()}`);
       const getresp = await response.json();
       const oldAmount = Number(getresp.loan.amount).toLocaleString();
       const amount = Number(getresp.loan.oldAmount).toLocaleString();
@@ -240,7 +240,7 @@ async function changeWork(e, loanId) {
   const selElem = e.target;
   const selectedOpt = selElem.options[selElem.selectedIndex];
   const workerid = selectedOpt.getAttribute('data-id');
-  fetch(`${htt}${slashes}${serverIP}${port}/loans/${loanId}`, {
+  fetch(`${serverIP}/loans/${loanId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -259,7 +259,7 @@ async function changeToOtherTime(id, e) {
   const tarId = initialId.find(item => item.id === id);
   isTimeChanged = tarId ? tarId.isTimeChanged : false;
   const tarTimeTd = e.target.closest('.edit-new-row').querySelector('.date-time-td');
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-loanId/${id}`);
+  const response = await fetch(`${serverIP}/loans-loanId/${id}`);
   const getresp = await response.json();
   const tarLoan = getresp[0];
   const firstTime = tarLoan.posNowDate || tarLoan.loanNowDate;
@@ -305,7 +305,7 @@ async function deleteLoan(id, e) {
   });
   if (result.isConfirmed) {
     const loanId = id;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-and-get/${loanId}?curCustId=${currentCustomerId}`, {method: 'DELETE'});
+    const response = await fetch(`${serverIP}/loans-and-get/${loanId}?curCustId=${currentCustomerId}`, {method: 'DELETE'});
     scrollPosition = tableDiv.scrollTop;
     const deleResp = await response.json();
     const custLoans = deleResp.allCustLoans;
@@ -359,7 +359,7 @@ async function editLoan(event, type, updatedField) {
     if (newInp.value.trim() === oldValue) {
       td.innerHTML = updatedField === 'note' ? oldValue : Number(oldValue).toLocaleString(); return
     }
-    await fetch(`${htt}${slashes}${serverIP}${port}/loans/${loanId}`, {
+    await fetch(`${serverIP}/loans/${loanId}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -420,7 +420,7 @@ broom.addEventListener('click', async function() {
       },
     });
     if (result1.isConfirmed) {
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/totalLoans/${currentCustomerId}`, {method: 'DELETE'});
+      const response = await fetch(`${serverIP}/totalLoans/${currentCustomerId}`, {method: 'DELETE'});
       const toJson = await response.json();
       const loans = toJson.allCustLoans;
       fetchLoans(loans);
@@ -441,7 +441,7 @@ broom.addEventListener('click', async function() {
     if (result2.isConfirmed) {
       const ids = Array.from(tableTbody.children).map(row => row.querySelector('.id-td').innerHTML);
       const toStringifyId = JSON.stringify(ids);
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans-selectedOnes?ids=${toStringifyId}&curCustId=${currentCustomerId}`, {method: 'DELETE'});
+      const response = await fetch(`${serverIP}/loans-selectedOnes?ids=${toStringifyId}&curCustId=${currentCustomerId}`, {method: 'DELETE'});
       const delResp = await response.json();
       const custLouns = delResp.allCustLoans;
       startIndexInp.value = '';
@@ -498,7 +498,7 @@ async function oldCreatePDF2() {
   }).filter(Boolean);
 
   const idsToStringify = JSON.stringify(ids);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/selected-posinvoices?ids=${idsToStringify}&custId=${currentCustomerId}`);
+  const response = await fetch(`${serverIP}/selected-posinvoices?ids=${idsToStringify}&custId=${currentCustomerId}`);
   const InvResp = await response.json();
   customerLoans = InvResp.custLons;
   const selectedInvoices = InvResp.selectedInvs;
@@ -718,7 +718,7 @@ async function createPDF(inclAll = true) {
     return invNum;
   }).filter(Boolean);
   const idsToStringify = JSON.stringify(ids);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/selected-posinvoices?ids=${idsToStringify}&custId=${currentCustomerId}`);
+  const response = await fetch(`${serverIP}/selected-posinvoices?ids=${idsToStringify}&custId=${currentCustomerId}`);
   const InvResp = await response.json();
   customerLoans = InvResp.custLons;
   const selectedInvoices = InvResp.selectedInvs;
@@ -966,7 +966,7 @@ async function lastBalancePDF() {
     const targetAmount = tableTbody.querySelectorAll('tr')[0].querySelector('.amount-td').innerHTML.replace(/,/g, '');
     const targetNote = tableTbody.querySelectorAll('tr')[0].querySelector('.note-td').innerHTML;
     let total = 0;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/loans/${currentCustomerId}`);
+    const response = await fetch(`${serverIP}/loans/${currentCustomerId}`);
     const customerLoans = await response.json();
     customerLoans.forEach(loan => total += Number(loan.amount));
 

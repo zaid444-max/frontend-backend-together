@@ -106,7 +106,7 @@ async function displayItems(invNum, seaInp, locType) {
   const items = locType === 'loanEdit' ? allItems : locType === 'invoice' ? itemListArray : '';
  const seachInp = document.querySelector(`.${seaInp}`);
   dropDownTablDiv.classList.add('show');
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-stItems/${invNum}`);
+  const response = await fetch(`${serverIP}/stockentinvs-stItems/${invNum}`);
   const getResp = await response.json();
   const invoice = getResp.inv;
   const posItems = invoice.posItems;

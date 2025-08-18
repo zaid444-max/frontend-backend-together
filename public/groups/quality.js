@@ -12,7 +12,7 @@ window.addEventListener('pageshow', (event) => {
 });
 
 addBrandButt.addEventListener('click', async () => {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/quality-get`, {
+  const response = await fetch(`${serverIP}/quality-get`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -34,7 +34,7 @@ function useLoadingIcon() {
 
 async function fetchQualitiesOnce() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/quality`);
+  const response = await fetch(`${serverIP}/quality`);
   const qualities = await response.json();
   fetchModels(qualities)
 }
@@ -63,7 +63,7 @@ function fetchModels(qualities) {
 
 async function deleteBrand(event) {
   const id = parseInt(event.target.closest('tr').querySelector('.brand-id-td').innerHTML);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/quality-get/${id}`, {method: 'DELETE'});
+  const response = await fetch(`${serverIP}/quality-get/${id}`, {method: 'DELETE'});
   const delResp = await response.json();
   if(delResp.quality === 'exists')
     return Toastify({
@@ -123,7 +123,7 @@ function editModel(event) {
     const newName = newInp.value.trim().toLocaleLowerCase();
     brandSpan.innerHTML = newInp.value.trim() || oldValue;
     const id = Number(event.target.closest('tr').querySelector('.brand-id-td').innerHTML);
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/quality-check/${id}?newName=${newName}`, {
+    const response = await fetch(`${serverIP}/quality-check/${id}?newName=${newName}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

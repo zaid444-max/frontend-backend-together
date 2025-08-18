@@ -44,7 +44,7 @@ function getItemQueries(notSpin) {
 let profits;
 let initialStockInvs;
 async function fetchItemsOnce() {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/itemsFilter-andStock?${getItemQueries()}`);
+  const response = await fetch(`${serverIP}/itemsFilter-andStock?${getItemQueries()}`);
   const itemResp = await response.json();
   const filtItems = itemResp.filtItems;
   const stockInvs = itemResp.stockInvs;
@@ -173,7 +173,7 @@ tableTBody.addEventListener('drop', async (e) => {
   const targetId = Number(e.target.closest('tr').getAttribute('data-id'));
   if (draggedItem === 'addItemButt') {
     const scrollPostion = tableContainer.scrollTop;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-filterToo?tarId=${targetId}&${getItemQueries()}`, {
+    const response = await fetch(`${serverIP}/items-filterToo?tarId=${targetId}&${getItemQueries()}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({})
@@ -189,7 +189,7 @@ addItemButt.addEventListener('click', async (e) => {
   const isHighlighted = [...tableTBody.querySelectorAll('tr')].some(row => row.style.backgroundColor === 'rgb(22, 22, 22)');
   const scrollPostion = tableContainer.scrollTop;
   if (!isHighlighted) {
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-filterToo?${getItemQueries()}`, {
+    const response = await fetch(`${serverIP}/items-filterToo?${getItemQueries()}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify()
@@ -204,7 +204,7 @@ addItemButt.addEventListener('click', async (e) => {
 });
 
 async function addItemByHighlighting(targetId, scrollPostion) {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-filterToo?tarId=${targetId}&isAddByHighl=${true}&${getItemQueries()}`, {
+  const response = await fetch(`${serverIP}/items-filterToo?tarId=${targetId}&isAddByHighl=${true}&${getItemQueries()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({})
@@ -238,7 +238,7 @@ tableTBody.addEventListener('click', function(e) {
 // checkbox
 async function checkBox(event, updatedField) {
   const idTdHTML = event.target.closest('tr').querySelector('.id-td').innerHTML;
-  await fetch(`${htt}${slashes}${serverIP}${port}/items-andChecktheBox/${idTdHTML}?updatedField=${updatedField}`);
+  await fetch(`${serverIP}/items-andChecktheBox/${idTdHTML}?updatedField=${updatedField}`);
 }
 
 let draggedRow = null;
@@ -296,7 +296,7 @@ function handleDrop(event) {
 }
 
 async function saveNewOrder(toLower, targRowId, transfereditemId) {
-  await fetch(`${htt}${slashes}${serverIP}${port}/update-orderMine?targRowId=${targRowId}&transfereditemId=${transfereditemId}`, {
+  await fetch(`${serverIP}/update-orderMine?targRowId=${targRowId}&transfereditemId=${transfereditemId}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ toLower })
@@ -321,7 +321,7 @@ async function editSKU(event, updatedField) {
     if (newInp.value.trim() === oldVal) return;
 
     const idTdHTML = event.target.closest('tr').querySelector('.id-td').innerHTML;
-    await fetch(`${htt}${slashes}${serverIP}${port}/items/${idTdHTML}`, {
+    await fetch(`${serverIP}/items/${idTdHTML}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -406,7 +406,7 @@ async function addEventListenerTo(brand, e, inputType, notInclude) {
     // Listen for scrolling and update position dynamically
     window.addEventListener("scroll", updateDropdownPosition);
     
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/${brand}?limit=10`);
+      const response = await fetch(`${serverIP}/${brand}?limit=10`);
       const brands = await response.json();
       for(const brand2 of brands) {
         const span = document.createElement('span');
@@ -435,8 +435,8 @@ async function addEventListenerTo(brand, e, inputType, notInclude) {
         });
       } else if (brand === 'model') {
         const thisFetchId = ++latestmodelId;
-        const response = await fetch(`${htt}${slashes}${serverIP}${port}/model?search=${updatedInpVal.toLocaleLowerCase()}&limit=300`);
-        console.log(`${htt}${slashes}${serverIP}${port}/model?search=${updatedInpVal.toLocaleLowerCase()}&limit=10`)
+        const response = await fetch(`${serverIP}/model?search=${updatedInpVal.toLocaleLowerCase()}&limit=300`);
+        console.log(`${serverIP}/model?search=${updatedInpVal.toLocaleLowerCase()}&limit=10`)
         const models = await response.json();
         const lastArray = models.filter(brand => brand.name.toLocaleLowerCase().includes(updatedInpVal));
         sortItem(updatedInpVal, lastArray, 'name');
@@ -529,7 +529,7 @@ async function editItem(targetId, newInp, brand, Td, idTdHTML, customDropdwonCon
   Td.innerHTML = newInp.value.trim();
 
   // Send the updated data to the backend
-  await fetch(`${htt}${slashes}${serverIP}${port}/items/${idTdHTML}`, {
+  await fetch(`${serverIP}/items/${idTdHTML}`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -581,7 +581,7 @@ async function editPrice(e, price, updatedField) {
       const updatedPrice = priceInp.value.trim() === '' ? oldValue: priceInp.value.trim();
         const itemChanging = e.target.closest('tr').querySelector('.changing-id-td').innerHTML;
         if (oldValue === updatedPrice) return;
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-changingId/${idTdHTML}?updatedField=${updatedField}&price=${price}&updatedChangingIdVal=${updatedChangingIdVal}&updatedprice=${updatedPrice}&itemChanging=${itemChanging}`);
+      const response = await fetch(`${serverIP}/items-changingId/${idTdHTML}?updatedField=${updatedField}&price=${price}&updatedChangingIdVal=${updatedChangingIdVal}&updatedprice=${updatedPrice}&itemChanging=${itemChanging}`);
       const updatResp = await response.json();
       if (updatedField === 'changingId') {
         if (updatResp.updatPrice) {
@@ -611,7 +611,7 @@ tableTBody.addEventListener('click', async (e) => {
   const scrollPostion = tableContainer.scrollTop;
   if (e.target.classList.contains('delete-icon')) {
     const itemId = e.target.closest('tr').querySelector('.id-td').innerHTML;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-delAndGet/${itemId}?${getItemQueries(true)}`, { method: 'DELETE' });
+    const response = await fetch(`${serverIP}/items-delAndGet/${itemId}?${getItemQueries(true)}`, { method: 'DELETE' });
     const delResp = await response.json();
     if (delResp.item === 'exists') {
       return Toastify({
@@ -685,7 +685,7 @@ async function fetchBrands(brand, className, arrowIcon) {
   customDropdwon.className = `${brand}-costum-dropdwon`;
   customDropdwonContainer.appendChild(customDropdwon)
 
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/${brand}`);
+  const response = await fetch(`${serverIP}/${brand}`);
   const brands = await response.json();
   brands.forEach(brand => {
     if (brand.name === 'Brand' || brand.name === 'Category') return
@@ -900,7 +900,7 @@ async function exportToExcel() {
   })
   const selVal = excelSelect.value;
   // Now send the data to the server for export
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/export-excel?hiddingBuyPrice=${isPriceIconClicked}&excSelectVal=${selVal}&priceVal=${priceSelect.value}`, {
+  const response = await fetch(`${serverIP}/export-excel?hiddingBuyPrice=${isPriceIconClicked}&excSelectVal=${selVal}&priceVal=${priceSelect.value}`, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({ rows }), // Send the table data
@@ -919,7 +919,7 @@ const modalContainerDiv = document.querySelector('.modal-container-div');
 const applyDiscountButt = document.querySelector('.apply-discount-butt');
 async function addDiscription(event) {
   const itemId = event.target.closest('tr').querySelector('.id-td').innerHTML;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`);
+  const response = await fetch(`${serverIP}/items/${itemId}`);
   const item = await response.json();
   discountTextarea.value = item.discription;
   modalContainerDiv.classList.remove('hidden');
@@ -954,7 +954,7 @@ async function addDiscription(event) {
   async function updateDiscription() {
     discountTextarea.removeEventListener('keydown', handleKeydown);
     applyDiscountButt.removeEventListener('click', applyDiscription);
-    await fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`, {
+    await fetch(`${serverIP}/items/${itemId}`, {
       method: 'PUT', 
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -1014,7 +1014,7 @@ document.querySelector('.excel-file-inp').addEventListener('change', function(e)
     for(const item of jsonData) {
       const id = Number(item.Id);
       const buyPrice = Number(item.buyPrice)
-      await fetch(`${htt}${slashes}${serverIP}${port}/items/${id}`, {
+      await fetch(`${serverIP}/items/${id}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -1027,7 +1027,7 @@ document.querySelector('.excel-file-inp').addEventListener('change', function(e)
 });
 
 async function resetItemQuantities(update) {
-  const resp = await fetch(`${htt}${slashes}${serverIP}${port}/check-item-qnt?update=${update}`);
+  const resp = await fetch(`${serverIP}/check-item-qnt?update=${update}`);
   const getResp = await resp.json();
   const missiQntItmes = getResp.missiQntItmes;
   console.log(missiQntItmes)
@@ -1040,7 +1040,7 @@ searchInp.addEventListener('keydown', function(e) {
 
 const changingIdTh = document.querySelector('.changing-id-th');
 changingIdTh.addEventListener('click', async function() {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/items`);
+  const response = await fetch(`${serverIP}/items`);
   const items = await response.json();
   const biggestChangingId = Math.max(...items.map(item => item.changingId)) + 1;
   alert(biggestChangingId)
@@ -1053,7 +1053,7 @@ async function orderByPrice(event) {
   const green = color === 'rgb(12, 100, 60)';
   const zero = blue ? 'blue' : green ? 'green' : false;
   const priceType = th.getAttribute('db-column')
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/itemsFilter-andStock?${getItemQueries()}&priceType=${priceType}&zero=${zero}`);
+  const response = await fetch(`${serverIP}/itemsFilter-andStock?${getItemQueries()}&priceType=${priceType}&zero=${zero}`);
   const itemResp = await response.json();
   const filtItems = itemResp.filtItems;
   fetchItems(filtItems);

@@ -27,7 +27,7 @@ const netTotalSpan = document.querySelector('.net-total-span');
 const clearInpIcon = document.querySelector('.fa-times-circle');
 const removeIcon = document.querySelector('.customerRemoveIcon');
 const priceSelect = document.querySelector('.price-select');
-const customerLoans = [];
+let customerLoans = [];
 const printIcon = document.querySelector('.fa-print');
 const noteInp = document.querySelector('.note-inp');
 const searchItemInp = document.querySelector('.search-item-inp');
@@ -198,7 +198,7 @@ async function CheckInvoiceStatus() {
         const tarInvTdList = row.querySelector('.target-inv-td').innerHTML.match(/\d+-\d+/g)?.map(pair => pair.split("-").map(Number));
         return {id, tarInvTdList}
       })
-      const sellItemRes = await fetch(`${htt}${slashes}${serverIP}${port}/sell-item`, {
+      const sellItemRes = await fetch(`${serverIP}/sell-item`, {
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({
@@ -270,13 +270,13 @@ async function fetchItems() {
   const search = searchItemInp.value;
   const categoryInpVal = categoryInp.value.replace(/\+/g, 'plus');
   const url = `
-  ${htt}${slashes}${serverIP}${port}/itemsFilter-extra?limit=${page}&search=${search}&categoryDivVal=${categoryInpVal}&currInvId=${targettedInvoiceId}&isNeededDataFetchedOnce=${isNeededDataFetchedOnce}`;
+  ${serverIP}/itemsFilter-extra?limit=${page}&search=${search}&categoryDivVal=${categoryInpVal}&currInvId=${targettedInvoiceId}&isNeededDataFetchedOnce=${isNeededDataFetchedOnce}`;
   const response = await fetch(url);
   const itemResp = await response.json();
   if (thisFetchId !== latestFetchId) return;
   squareContainer.innerHTML = '';
   isNeededDataFetchedOnce = true;
-  fetchCustomerLoans(itemResp.loans);
+  customerLoans = itemResp.loans;
   const items = itemResp.items;
   const stockItems = itemResp.stockItems;
   const posInvoice = itemResp.posInvoice;
@@ -335,7 +335,7 @@ async function fetchItems() {
         let quantitySpanHTML = 1;
         const priceOneSpanHTML = e.target.closest('div').querySelector('.price-one-span').innerHTML;
         const squareTargetItemQuantity = parseInt(e.target.closest('div').querySelector('.quantity-span').innerHTML);
-        const respone = await fetch(`${htt}${slashes}${serverIP}${port}/items/${parseInt(targettedItemIdHTML)}`)
+        const respone = await fetch(`${serverIP}/items/${parseInt(targettedItemIdHTML)}`)
         const tableTargetItem = await respone.json();
         if (tableTargetItem.quantity <= 0) {
           Toastify({
@@ -525,7 +525,7 @@ function renderInvoiceTable() {
 
       newInp.addEventListener('blur', async () => {
         const itemId = targetTd.closest('tr').querySelector('.id-td').querySelector('.id-span').innerHTML;
-        const response = await fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`);
+        const response = await fetch(`${serverIP}/items/${itemId}`);
         const targetItem = await response.json();
         if (parseInt(newInp.value) > targetItem.quantity || parseInt(newInp.value) === 0) {
           Toastify({
@@ -714,7 +714,7 @@ discountButt.addEventListener('click', () => {
 
 let StockentryInvoices;
 async function fetchStockInvs() {
-  const response2 = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs`);
+  const response2 = await fetch(`${serverIP}/stockentinvs`);
   const allStockentryInvoices = await response2.json();
   StockentryInvoices = allStockentryInvoices;
 }
@@ -795,7 +795,7 @@ payButt.addEventListener('click', async () => {
     }
     payButt.disabled = true;
     payButt.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-    const paidItemResp = await fetch(`${htt}${slashes}${serverIP}${port}/items/pay`, {
+    const paidItemResp = await fetch(`${serverIP}/items/pay`, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -1003,7 +1003,7 @@ async function printInvoice(invoiceId, invoiceType, customer, delivery, loanList
 document.querySelector('.fa-print').addEventListener('click', async function() {
   const custId = customerInp.getAttribute('data-id');
   const delId = deliveryInp.getAttribute('data-id');
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/onlyClickInvoicePrint?custId=${custId}&delId=${delId}&currInvId=${targettedInvoiceId}`);
+  const response = await fetch(`${serverIP}/onlyClickInvoicePrint?custId=${custId}&delId=${delId}&currInvId=${targettedInvoiceId}`);
   const getRes = await response.json();
   const { customer, delivery, loanList, currInv} = getRes;
   printInvoice('existingInvoice', 'existingInvoice', customer, delivery, loanList, currInv)
@@ -1049,7 +1049,7 @@ function setAddeventlistenner() {
 
       newInp.addEventListener('blur', async () => {
         const itemId = targetTd.closest('tr').querySelector('.id-td').querySelector('.id-span').innerHTML;
-        const response = await fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`);
+        const response = await fetch(`${serverIP}/items/${itemId}`);
         const targetItem = await response.json();
         if (parseInt(newInp.value) > targetItem.quantity || parseInt(newInp.value) === 0) {
           Toastify({
@@ -1127,22 +1127,16 @@ function formatNumber(number) {
 };
 
 async function fetchPosInvoice() {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/posinvoices/${targettedInvoiceId}`);
+  const response = await fetch(`${serverIP}/posinvoices/${targettedInvoiceId}`);
   const targetInvoice = await response.json();
   return targetInvoice;
 };
 
-function fetchCustomerLoans(loans) {
-  loans.forEach((loan) => {
-    customerLoans.push(loan);
-  })
-}
-
-function fetchCustomers(customers) {
+function fetchCustomers(customers, loans) {
   customers.forEach((customer, index) => {
     if (customer.name === 'Customer Name') return;
     let total = 0;
-    customerLoans.forEach(loan => {total += Number(loan.amount)})
+    loans.filter(loan => loan.customer_id === customer.id).forEach(loan => {total += Number(loan.amount)})
     if (index === 0) customerInp.placeholder = `Fast Customer (${total.toLocaleString()})`;
     const newSpan = document.createElement('span');
     newSpan.className = 'customer-span';
@@ -1165,9 +1159,9 @@ let isCustomersFetched;
 customerInp.addEventListener('click', async function (e) {
   inputContainerDiv.style.display = '';
   if (isCustomersFetched) return;
-  const resp = await fetch(`${htt}${slashes}${serverIP}${port}/customers-Loans-pos`);
+  const resp = await fetch(`${serverIP}/customers-Loans-pos`);
   const getResp = await resp.json();
-  fetchCustomers(getResp.customers);
+  fetchCustomers(getResp.customers, getResp.loans);
 })
 
 customerInp.addEventListener('keydown', (e) => {heilightArrow (e, customDropdwon, 'customer')});
@@ -1207,7 +1201,7 @@ removeIcon.addEventListener('click', async function () {
   customerInp.value = '';
   searchCustomers(customerInp, customerListArray, customDropdwon, 'customer', this)
   customerInp.setAttribute('data-id', 1);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/customersGetProfits/${1}`);
+  const response = await fetch(`${serverIP}/customersGetProfits/${1}`);
   const getRespo = await response.json();
   const customer = getRespo.customer;
   const profits = getRespo.profits;
@@ -1301,7 +1295,7 @@ async function clickSpan(e, customerName, attribute, customerInp, inputContainer
   customerInp.style.backgroundColor = '';
   customerInp.setAttribute('data-id', attribute);
   if (inputType === 'customer') {
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/customersGetProfits/${attribute}`);
+    const response = await fetch(`${serverIP}/customersGetProfits/${attribute}`);
     const getRespo = await response.json();
     const customer = getRespo.customer;
     const profits = getRespo.profits;
@@ -1342,7 +1336,7 @@ let isCategoryFetched;
 categoryInp.addEventListener('click', async function (e) {
   categoryInputContainerDiv.style.display = '';
   if (isCategoryFetched) return;
-  const reso = await fetch(`${htt}${slashes}${serverIP}${port}/category`);
+  const reso = await fetch(`${serverIP}/category`);
   const categories = await reso.json();
   fetchCategories(categories);
 })
@@ -1394,7 +1388,7 @@ let isDeliveriesFetched;
 deliveryInp.addEventListener('click', async function (e) {
   deliveryInputContainerDiv.style.display = '';
   if (isDeliveriesFetched) return;
-  const resp = await fetch(`${htt}${slashes}${serverIP}${port}/deliveries`);
+  const resp = await fetch(`${serverIP}/deliveries`);
   const getResp = await resp.json();
   const deliveries = getResp.deliveries;
   fetchDeliveries(deliveries);
@@ -1572,7 +1566,7 @@ printIcon.addEventListener('mousedown', function() {
     isHeld = true;
     const custId = customerInp.getAttribute('data-id');
     const delId = deliveryInp.getAttribute('data-id');
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/onlyClickInvoicePrint?custId=${custId}&delId=${delId}&currInvId=${targettedInvoiceId}`);
+    const response = await fetch(`${serverIP}/onlyClickInvoicePrint?custId=${custId}&delId=${delId}&currInvId=${targettedInvoiceId}`);
     const getRes = await response.json();
     const { customer, delivery, loanList, currInv} = getRes;
       printInvoice('iPower', 'iPower', customer, delivery, loanList, currInv)
@@ -1594,7 +1588,7 @@ printIcon.addEventListener('touchstart', function() {
   printHoldTimer = setTimeout(async () => {
     const custId = customerInp.getAttribute('data-id');
     const delId = deliveryInp.getAttribute('data-id');
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/onlyClickInvoicePrint?custId=${custId}&delId=${delId}&currInvId=${targettedInvoiceId}`);
+    const response = await fetch(`${serverIP}/onlyClickInvoicePrint?custId=${custId}&delId=${delId}&currInvId=${targettedInvoiceId}`);
     const getRes = await response.json();
     const { customer, delivery, loanList, currInv} = getRes;
       printInvoice('iPower', 'iPower', customer, delivery, loanList, currInv)
@@ -1628,7 +1622,7 @@ loanCheckbox.addEventListener('click', async function() {
     payButt.style.backgroundColor = '';
   }
   if (isCustomersFetched) return;
-  const resp = await fetch(`${htt}${slashes}${serverIP}${port}/customers-Loans-pos`);
+  const resp = await fetch(`${serverIP}/customers-Loans-pos`);
   const getResp = await resp.json();
   fetchCustomers(getResp.customers, getResp.loans);
 })
@@ -1662,7 +1656,7 @@ priceSelect.addEventListener('change', async function(e) {
   let profits = e.detail?.profits;
   const isCategoryDropdown = e.detail?.isCategoryDropdown;
   if (!profits) {
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/getProfits`);
+    const response = await fetch(`${serverIP}/getProfits`);
     const getRes = await response.json();
     profits = getRes.profits;
   }

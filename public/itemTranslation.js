@@ -1,13 +1,13 @@
 const addButt = document.querySelector('.add-butt');
 addButt.addEventListener('click', async function() {
-  const respo = await fetch(`${htt}${slashes}${serverIP}${port}/add-transl`, { method: 'POST' });
+  const respo = await fetch(`${serverIP}/add-transl`, { method: 'POST' });
   const getRes = await respo.json();
   const transls = getRes.transls;
   fetchTransls(transls);
 })
 
 async function fetchTranslsOnce() {
-  const respo = await fetch(`${htt}${slashes}${serverIP}${port}/get-transls`);
+  const respo = await fetch(`${serverIP}/get-transls`);
   const getRes = await respo.json();
   const transls = getRes.transls;
   fetchTransls(transls);
@@ -48,7 +48,7 @@ async function updateTransl(id, e) {
   const ifState = newDiv.querySelector('.ifState-inp').value;
   const changeStat = newDiv.querySelector('.changeStat-inp').value;
   const afterChangeStat = newDiv.querySelector('.afterChangeStat-inp').value;
-  await fetch(`${htt}${slashes}${serverIP}${port}/update-transl?id=${id}`, {
+  await fetch(`${serverIP}/update-transl?id=${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -60,7 +60,7 @@ async function updateTransl(id, e) {
 }
 
 async function deleteTransl(id, e) {
-  await fetch(`${htt}${slashes}${serverIP}${port}/del-transls?id=${id}`, { method: 'DELETE' });
+  await fetch(`${serverIP}/del-transls?id=${id}`, { method: 'DELETE' });
   const tarDiv = e.target.closest('.new-div');
   tarDiv.remove();
   document.querySelectorAll('.ind-span').forEach((indSp, ind) => {

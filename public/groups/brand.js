@@ -12,7 +12,7 @@ window.addEventListener('pageshow', (event) => {
 });
 
 addBrandButt.addEventListener('click', async () => {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/brand-get`, {
+  const response = await fetch(`${serverIP}/brand-get`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -34,7 +34,7 @@ function useLoadingIcon() {
 
 async function fetchAllBrandsOnce() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/brand`);
+  const response = await fetch(`${serverIP}/brand`);
   const brands = await response.json();
   fetchcategories(brands);
 }
@@ -62,7 +62,7 @@ function fetchcategories(brands) {
 
 async function deleteBrand(event) {
   const id = parseInt(event.target.closest('tr').querySelector('.brand-id-td').innerHTML);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/brand-get/${id}`, {method: 'DELETE'});
+  const response = await fetch(`${serverIP}/brand-get/${id}`, {method: 'DELETE'});
   const delResp = await response.json();
   if (delResp.brand === 'exists')
   return Toastify({
@@ -120,7 +120,7 @@ function editBrand(event) {
   newInp.addEventListener('blur', async () => {
     if (oldValue === newInp.value.trim()) {return brandSpan.innerHTML = newInp.value.trim() || oldValue;};
     const newName = newInp.value.trim().toLocaleLowerCase();
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/brand-check/${id}?newName=${newName}`, {
+    const response = await fetch(`${serverIP}/brand-check/${id}?newName=${newName}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({

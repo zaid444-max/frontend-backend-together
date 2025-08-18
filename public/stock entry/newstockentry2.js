@@ -23,7 +23,7 @@ async function fetchItems(newInp) {
   const thisFetchId = ++latestFetchId; // Increment global fetch ID
   const updatedInpVal = newInp ? newInp.value.trim().toLocaleLowerCase() : '';
   customDropdwonSpans.length = 0;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/itemsFilter2?search=${updatedInpVal}`);
+  const response = await fetch(`${serverIP}/itemsFilter2?search=${updatedInpVal}`);
   const itemResp = await response.json();
   const filtItems = itemResp.filtItems;
   if (thisFetchId !== latestFetchId) return;
@@ -70,7 +70,7 @@ newDiv.addEventListener('click', async function (e) {
     newDiv.innerHTML = e.target.innerHTML;
     const itemId = Number(e.target.getAttribute('data-id'));
     newDiv.setAttribute('data-id', e.target.getAttribute('data-id'))
-    fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+    fetch(`${serverIP}/items/${itemId}`)
     .then(response => response.json())
     .then(targetItem => {
       taregtBuyPriceInp.value = Number(targetItem.buyPrice);
@@ -140,7 +140,7 @@ addItemButt.addEventListener('click', () => {
       newDiv.innerHTML = e.target.innerHTML;
       const itemId = Number(e.target.getAttribute('data-id'));
       newDiv.setAttribute('data-id', e.target.getAttribute('data-id'))
-      fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+      fetch(`${serverIP}/items/${itemId}`)
       .then(response => response.json())
       .then(targetItem => {
         taregtBuyPriceInp.value = Number(targetItem.buyPrice);
@@ -344,7 +344,7 @@ saveButt.addEventListener('click', async () => {
       buyPrice: buyPrice
     }
   });
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-checkBox`, {
+  const response = await fetch(`${serverIP}/stockentinvs-checkBox`, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ newStockEntryInv, priceBox: checkboxInp.checked ? true : false, items })
@@ -392,7 +392,7 @@ function searchItem(customDropdwon, newInp, newDiv, customDropdwonContainer, cus
       newDiv.innerHTML = e.target.innerHTML;
       const itemId = Number(e.target.getAttribute('data-id'));
       newDiv.setAttribute('data-id', e.target.getAttribute('data-id'))
-      fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+      fetch(`${serverIP}/items/${itemId}`)
         .then(response => response.json())
         .then(targetItem => {
           taregtBuyPriceInp.value = Number(targetItem.buyPrice);
@@ -422,7 +422,7 @@ function searchItem(customDropdwon, newInp, newDiv, customDropdwonContainer, cus
       newDiv.innerHTML = brandArray2[index].innerHTML;
       const itemId = Number(attribute);
       newDiv.setAttribute('data-id', attribute)
-      fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+      fetch(`${serverIP}/items/${itemId}`)
         .then(response => response.json())
         .then(targetItem => {
           taregtBuyPriceInp.value = Number(targetItem.buyPrice);
@@ -627,7 +627,7 @@ function addItemDiv(itemId, brand, model, category, quality, buyPrice, quantity)
         newDiv.innerHTML = e.target.innerHTML;
         const itemId = Number(span.getAttribute('data-id'));
         newDiv.setAttribute('data-id', span.getAttribute('data-id'))
-        const response = await fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`);
+        const response = await fetch(`${serverIP}/items/${itemId}`);
         const targetItem = await response.json();
         taregtBuyPriceInp.value = Number(targetItem.buyPrice);
         updateTotal();

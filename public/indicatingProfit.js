@@ -6,7 +6,7 @@ addPriceButt.addEventListener('click', async function(e) {
   const targDiv = [...document.querySelectorAll('.profit-div')].find(div => div.style.backgroundColor === 'rgb(43, 37, 37)');
   let disOrder;
   if (targDiv) disOrder = Number(targDiv.getAttribute('disOrder')) + 0.1;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/addProfit?priVal=${priVal}&disOrder=${disOrder}`, { method: 'POST' });
+  const response = await fetch(`${serverIP}/addProfit?priVal=${priVal}&disOrder=${disOrder}`, { method: 'POST' });
   const addResp = await response.json();
   const profits = addResp.profits;
   fetchprofits(profits);
@@ -19,7 +19,7 @@ priceSel.addEventListener('change', function() {
 
 async function fetchprofitsOnce(newVal) {
   !newVal ? newVal = priceSel.value : '';
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/getProfits?price=${newVal}`);
+  const response = await fetch(`${serverIP}/getProfits?price=${newVal}`);
   const addResp = await response.json();
   const profits = addResp.profits;
   fetchprofits(profits);
@@ -73,7 +73,7 @@ async function saveAmount(event, id, enter) {
   ]
   let updatedAmounts = { start, end, proAmount };
   updatedAmounts = JSON.stringify(updatedAmounts);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/updateProfit?updatedAmounts=${updatedAmounts}&id=${id}`, { method: 'PUT' });
+  const response = await fetch(`${serverIP}/updateProfit?updatedAmounts=${updatedAmounts}&id=${id}`, { method: 'PUT' });
   const updResp = await response.json();
   if (!updResp.success) return alert('Not updated');
   targSaveButt.style.display = 'none';
@@ -90,7 +90,7 @@ async function removeProfit(event, id) {
     customClass: { popup: 'custom-popup' },
   });
   if (!result.isConfirmed) return;
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/deleteProfits/${id}`, { method: 'DELETE' });
+  const response = await fetch(`${serverIP}/deleteProfits/${id}`, { method: 'DELETE' });
   const delResp = await response.json();
   if (delResp.success) {
     Toastify({

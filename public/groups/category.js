@@ -12,7 +12,7 @@ window.location.reload();
 });
 
 addBrandButt.addEventListener('click', async () => {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/category-get`, {
+  const response = await fetch(`${serverIP}/category-get`, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({
@@ -34,7 +34,7 @@ function useLoadingIcon() {
 
 async function fetchcategoriesOnce() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/category`);
+  const response = await fetch(`${serverIP}/category`);
   const categories = await response.json();
   fetchQualities(categories);
 }
@@ -66,7 +66,7 @@ async function fetchQualities(categories) {
 
 async function deleteBrand(event) {
   const id = parseInt(event.target.closest('tr').querySelector('.brand-id-td').innerHTML);
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/category-get/${id}`, {method: 'DELETE'});
+  const response = await fetch(`${serverIP}/category-get/${id}`, {method: 'DELETE'});
   const delResp = await response.json();
   if (delResp.category === 'exists')
     return Toastify({
@@ -127,7 +127,7 @@ function editBrand(event) {
     if (oldValue === newInp.value.trim()) {return brandSpan.innerHTML = newInp.value.trim() || oldValue;};
     const newName = newInp.value.trim().toLocaleLowerCase();
     const id = event.target.closest('tr').querySelector('.brand-id-td').innerHTML;
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/category-check/${id}?newName=${newName}`, {
+    const response = await fetch(`${serverIP}/category-check/${id}?newName=${newName}`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -301,7 +301,7 @@ function showColorPicker(event) {
 saveColorButt.addEventListener('click', async function(e) {
   colorPickerContainer.style.display = 'none';
   const rgbInp = rgbCode.querySelector('.rgb-inp');
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/category-check-color/${categoryId}`, {
+  const response = await fetch(`${serverIP}/category-check-color/${categoryId}`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({

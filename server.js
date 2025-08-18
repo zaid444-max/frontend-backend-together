@@ -7,6 +7,7 @@ const compression = require('compression');
 const ExcelJS = require("exceljs");
 const cheerio = require('cheerio');
 const app = express();
+const os = require("os");
 
 app.use(cors()); // allow all origins, all methods by default
 
@@ -15,11 +16,7 @@ app.use(compression());
 // Increase limit to, say, 20MB
 app.use(express.json({ limit: "20mb" }));
 
-app.use(basicAuth({
-  users: { "ipower": "ipowerdragon" }, // change username & password
-  challenge: true, // shows browser login popup
-  unauthorizedResponse: "Access denied"
-}));
+if (os.hostname() !== 'ipowerdragon') app.use(basicAuth({ users: { "ipower": "ipowerdragon" },challenge: true, unauthorizedResponse: "Access denied" }));
 
 app.use((req, res, next) => {   
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -31,7 +28,6 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static("public")); // Serve frontend files
 
-/*
 const db = mysql.createPool({
     connectionLimit: 10,
     host: process.env.DB_HOST,
@@ -41,8 +37,8 @@ const db = mysql.createPool({
     database: process.env.DB_NAME,
     multipleStatements: true // ✅ add this
 });
-*/
 
+/*
 const db = mysql.createPool({
     connectionLimit: 10,
     host: "trolley.proxy.rlwy.net",
@@ -52,6 +48,7 @@ const db = mysql.createPool({
     database: 'railway',
     multipleStatements: true // ✅ add this
 });
+*/
 
 // ✅ Whenever a new connection is made, set the timezone
 db.on("connection", (connection) => {
@@ -649,37 +646,6 @@ const posInvQuery = `
     LEFT JOIN quality ON quality.id = items.quality
     WHERE posinvoices.id = ?
 `
-
-const allItemsSql = `SELECT 
-    i.id, 
-    b.name AS brand_name, 
-    m.name AS model_name, 
-    c.name AS category_name, 
-    q.name AS quality_name, 
-    i.quantity, 
-    i.buyPrice, 
-    i.priceOne0, 
-    i.priceTwo, 
-    i.priceThree, 
-    i.priceOne, 
-    i.priceFive, 
-    i.priceSix, 
-    i.priceSevin, 
-    i.display_order, 
-    i.changingId, 
-    i.SKU, 
-    i.boxId, 
-    i.disable, 
-    i.noExcel, 
-    i.discription, 
-    c.circle_ball AS ball 
-    FROM items i 
-    JOIN brand b ON i.brand = b.id 
-    JOIN model m ON i.model = m.id 
-    JOIN category c ON i.category = c.id 
-    JOIN quality q ON i.quality = q.id
-`
-
 // Fetch all items with filtering with extra function and queries and alos updating
 app.get('/itemsFilter-extra', (req, res) => {
     const currInvId = req.query.currInvId;
@@ -3849,7 +3815,4 @@ app.delete('/del-transls', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
-
 });
-
-

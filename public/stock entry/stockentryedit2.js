@@ -34,7 +34,7 @@ let latestFetchId = 0;
 async function fetchItems(newInp) {
   const thisFetchId = ++latestFetchId; // Increment global fetch ID
   const updatedInpVal = newInp ? newInp.value.trim().toLocaleLowerCase() : '';  
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/itemsFilter?search=${updatedInpVal}`);
+  const response = await fetch(`${serverIP}/itemsFilter?search=${updatedInpVal}`);
   const items = await response.json();
   if (thisFetchId !== latestFetchId) return;
   items.forEach(item => {
@@ -79,7 +79,7 @@ async function createDropdown(e) {
     newDiv.innerHTML = e.target.innerHTML;
     const itemId = Number(e.target.getAttribute('data-id'));
     newDiv.setAttribute('data-id', e.target.getAttribute('data-id'))
-    fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+    fetch(`${serverIP}/items/${itemId}`)
     .then(response => response.json())
     .then(targetItem => {
       taregtBuyPriceInp.value = Number(targetItem.buyPrice);
@@ -114,7 +114,7 @@ function useLoadingIcon() {
 
 async function fetchThisInvoiceFromBackend() {
   useLoadingIcon();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-get/${currentInvoiceId}`);
+  const response = await fetch(`${serverIP}/stockentinvs-get/${currentInvoiceId}`);
   const stockResp = await response.json();
   const invoice = stockResp.invoice;
   currentIdInvoice = invoice;
@@ -385,7 +385,7 @@ function fetchInvoiceStatus() {
           buyPrice: buyPrice
         }
       });
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-checkBoxEditNew/${currentInvoiceId}`, {
+      const response = await fetch(`${serverIP}/stockentinvs-checkBoxEditNew/${currentInvoiceId}`, {
         method:'PUT',
         headers:{'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -460,7 +460,7 @@ function fetchInvoiceStatus() {
       });
 
       // ✅ Fetch all items' latest quantities in one request
-      const response = await fetch(`${htt}${slashes}${serverIP}${port}/items-and-updateStock/batch?invId=${currentInvoiceId}`, {
+      const response = await fetch(`${serverIP}/items-and-updateStock/batch?invId=${currentInvoiceId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -522,7 +522,7 @@ function fetchInvoiceStatus() {
           buyPrice: buyPrice
         }
       });
-      await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-submit/${currentInvoiceId}`, {
+      await fetch(`${serverIP}/stockentinvs-submit/${currentInvoiceId}`, {
         method:'PUT',
         headers:{'Content-type': 'application/json'},
         body: JSON.stringify({
@@ -569,7 +569,7 @@ function enableSaveButt() {
 cancelButt.addEventListener('click', async () => {
   cancelButt.disabled = true;
   cancelButt.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs/${currentInvoiceId}`, {
+  await fetch(`${serverIP}/stockentinvs/${currentInvoiceId}`, {
     method:'PUT',
     headers:{'Content-type': 'application/json'},
     body: JSON.stringify({
@@ -615,7 +615,7 @@ cancelButt.addEventListener('click', async () => {
           buyPrice: buyPrice
         }
       });
-    await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-submit/${currentInvoiceId}`, {
+    await fetch(`${serverIP}/stockentinvs-submit/${currentInvoiceId}`, {
       method:'PUT',
       headers:{'Content-type': 'application/json'},
       body: JSON.stringify({
@@ -660,7 +660,7 @@ function searchItem(customDropdwon, newInp, newDiv, customDropdwonContainer, cus
       newDiv.innerHTML = e.target.innerHTML;
       const itemId = Number(e.target.getAttribute('data-id'));
       newDiv.setAttribute('data-id', e.target.getAttribute('data-id'));
-      fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+      fetch(`${serverIP}/items/${itemId}`)
       .then(response => response.json())
       .then(targetItem => {
         taregtBuyPriceInp.value = Number(targetItem.buyPrice);
@@ -687,7 +687,7 @@ function searchItem(customDropdwon, newInp, newDiv, customDropdwonContainer, cus
       newDiv.innerHTML = brandArray2[index].innerHTML;
       const itemId = Number(attribute);
       newDiv.setAttribute('data-id', attribute)
-      fetch(`${htt}${slashes}${serverIP}${port}/items/${itemId}`)
+      fetch(`${serverIP}/items/${itemId}`)
       .then(response => response.json())
       .then(targetItem => {
         taregtBuyPriceInp.value = Number(targetItem.buyPrice);

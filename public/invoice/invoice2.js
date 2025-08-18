@@ -101,7 +101,7 @@ function fetchLoans(loans) {
 
 const stockInvsList = [];
 async function fetchStockInvs() {
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/stockentinvs-stItems`);
+  const response = await fetch(`${serverIP}/stockentinvs-stItems`);
   const getResp = await response.json();
   const StockInvs = getResp.stInvs;
   StockInvs.forEach(inv => stockInvsList.push(inv));
@@ -140,7 +140,7 @@ async function fetchPosInvoices() {
   const workerNameVal = workerInp.value;
   const limit = pageInp.value || 50;
   const searchVal = searchInp.value.trim().toLowerCase();
-  const response = await fetch(`${htt}${slashes}${serverIP}${port}/posinvoicesFilter-extra-mine?startDate=${startDateInpVal}&endDate=${endDateInpVal}&priceSelectVal=${priceSelectVal}&deliverySelectVal=${deliverySelectVal}&checkIcon=${checkIconMatch}&customer=${customerNameVal}&delivery=${deliveryNameVal}&worker=${workerNameVal}&limit=${limit}&searchVal=${searchVal}&isItemsAllFetched=${isItemsAllFetched}`);
+  const response = await fetch(`${serverIP}/posinvoicesFilter-extra-mine?startDate=${startDateInpVal}&endDate=${endDateInpVal}&priceSelectVal=${priceSelectVal}&deliverySelectVal=${deliverySelectVal}&checkIcon=${checkIconMatch}&customer=${customerNameVal}&delivery=${deliveryNameVal}&worker=${workerNameVal}&limit=${limit}&searchVal=${searchVal}&isItemsAllFetched=${isItemsAllFetched}`);
   const result = await response.json();
   if (thisFetchId !== latestFetchId) return;
   tableTbody.innerHTML = '';
@@ -290,7 +290,7 @@ tableTbody.addEventListener('click', async (e) => {
     if (result.isConfirmed) {
       const targetInvoiceId = parseInt(e.target.closest('tr').querySelector('.invoice-id-td').innerHTML);
       e.target.closest('tr').remove();
-      await fetch(`${htt}${slashes}${serverIP}${port}/posinvoices/${targetInvoiceId}`, {method: 'DELETE'})
+      await fetch(`${serverIP}/posinvoices/${targetInvoiceId}`, {method: 'DELETE'})
       updateTotal();
       Toastify({
         text: `Removed successfully!`,
@@ -316,7 +316,7 @@ tableTbody.addEventListener('click', async (e) => {
       newInp.focus();
       newInp.addEventListener('blur', async function () {
         if (newInp.value.trim() === '' || isNaN(newInp.value.trim())){ rowETarget.innerHTML = oldVal; return};
-        await fetch(`${htt}${slashes}${serverIP}${port}/posinvoices/${targettedInvoiceId}`, {
+        await fetch(`${serverIP}/posinvoices/${targettedInvoiceId}`, {
         method:'PUT',
         headers:{'Content-Type': 'application/json'},
         body: JSON.stringify({
@@ -400,7 +400,7 @@ const fetchedCustomers = new Map();
 async function fetchCustomers() {
   const customerListArray = [];
   if (!fetchedCustomers.has(1) && !fetchedCustomers.has(2)) {
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/customers`);
+    const response = await fetch(`${serverIP}/customers`);
     const customers = await response.json();
     fetchedCustomers.set(1, customers);
     fetchedCustomers.set(2, customerListArray);
@@ -425,7 +425,7 @@ const fetchedDelieveries = new Map();
 async function fetchDeliveries() {
   const deliveryListArray = [];
   if (!fetchedDelieveries.has(1) && !fetchedDelieveries.has(2)) {
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/deliveries`);
+    const response = await fetch(`${serverIP}/deliveries`);
     const getResp = await response.json();
     const deliveries = getResp.deliveries;
     fetchedDelieveries.set(1, deliveries);
@@ -451,7 +451,7 @@ const fetchedWorkers = new Map();
 async function fetchWorkers() {
   const workerListArray = [];
   if (!fetchedWorkers.has(1) && !fetchedWorkers.has(2)) {
-    const response = await fetch(`${htt}${slashes}${serverIP}${port}/workers`);
+    const response = await fetch(`${serverIP}/workers`);
     const workers = await response.json();
     fetchedWorkers.set(1, workers);
     fetchedWorkers.set(2, workerListArray);
@@ -715,7 +715,7 @@ totalQuantitySpan.addEventListener('click', async function() {await fetchStockIn
 searchInp.addEventListener('keydown', async function(e) {
   if (e.key === 'Enter' && e.shiftKey) {
     console.log('yes')
-    const resp = await fetch(`${htt}${slashes}${serverIP}${port}/replaceNewPosInvs`);
+    const resp = await fetch(`${serverIP}/replaceNewPosInvs`);
     const getRes = await resp.json();
     if (getRes.success) alert('All done')
       else alert('Not successful')
