@@ -1526,7 +1526,7 @@ document.querySelector('.newTab-link').addEventListener('click', function() {
 })
 
 const lineStateDiv = document.querySelector('.lineState-div');
-lineStateDiv.innerHTML = (serverIP === 'pos.biggroups.org' || serverIP === '') ? 'Online' : 'Offline';
+lineStateDiv.innerHTML = (serverIP === 'https://pos.biggroups.org' || serverIP === '') ? 'Online' : 'Offline';
 if (lineStateDiv.innerHTML === 'Offline') lineStateDiv.style.color = 'orange';
 else {lineStateDiv.style.color = 'rgb(22, 156, 82)'}
 
