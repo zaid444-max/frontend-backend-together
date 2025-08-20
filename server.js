@@ -16,7 +16,7 @@ app.use(compression());
 // Increase limit to, say, 20MB
 app.use(express.json({ limit: "20mb" }));
 
-//if (os.hostname() !== 'ipowerdragon') app.use(basicAuth({ users: { "ipower": "ipowerdragon99" },challenge: true, unauthorizedResponse: "Access denied" }));
+if (os.hostname() !== 'ipowerdragon') app.use(basicAuth({ users: { "ipower": "ipowerdragon99" },challenge: true, unauthorizedResponse: "Access denied" }));
 
 app.use((req, res, next) => {   
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -3819,3 +3819,4 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
