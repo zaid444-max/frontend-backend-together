@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static("public")); // Serve frontend files
 
-/*
+
 const db = mysql.createPool({
     connectionLimit: 10,
     host: process.env.DB_HOST,
@@ -38,35 +38,23 @@ const db = mysql.createPool({
     database: process.env.DB_NAME,
     multipleStatements: true // ✅ add this
 });
+
+/*
+const db = mysql.createPool({
+    connectionLimit: 10,
+    host: "trolley.proxy.rlwy.net",
+    port: 39950, 
+    user: 'root',
+    password: "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
+    database: 'railway',
+    multipleStatements: true // ✅ add this
+});
 */
 
-function createPool() {
-  const pool = mysql.createPool({
-    connectionLimit: 10,
-    host: process.env.DB_HOST || "trolley.proxy.rlwy.net",
-    port: process.env.DB_PORT || 39950,
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
-    database: process.env.DB_NAME || "railway",
-    multipleStatements: true
-  });
-
-  pool.on("connection", (conn) => {
-    conn.query("SET time_zone = '+03:00'");
-  });
-
-  pool.on("error", (err) => {
-    console.error("MySQL pool error:", err);
-    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-      console.log("Recreating MySQL pool...");
-      db = createPool(); // 🔁 recreate the pool
-    }
-  });
-
-  return pool;
-}
-
-let db = createPool();
+// ✅ Whenever a new connection is made, set the timezone
+db.on("connection", (connection) => {
+    connection.query("SET time_zone = '+03:00'");
+});
   
 console.log('MySQL pool initialized');
 
@@ -3825,22 +3813,7 @@ app.delete('/del-transls', (req, res) => {
     })
 })
 
-// Prevent Railway from closing idle MySQL connections
-setInterval(() => {
-  db.query('SELECT 1', (err) => {
-    if (err) console.error('Keep-alive query failed:', err);
-  });
-}, 5000); // every 5 seconds
-
-// Handle pool-level errors
-db.on('error', (err) => {
-  console.error('MySQL pool error:', err);
-});
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
-
 });
-
-
