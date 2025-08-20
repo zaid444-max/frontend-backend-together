@@ -16,7 +16,7 @@ app.use(compression());
 // Increase limit to, say, 20MB
 app.use(express.json({ limit: "20mb" }));
 
-if (os.hostname() !== 'ipowerdragon') app.use(basicAuth({ users: { "ipower": "ipowerdragon99" },challenge: true, unauthorizedResponse: "Access denied" }));
+//if (os.hostname() !== 'ipowerdragon') app.use(basicAuth({ users: { "ipower": "ipowerdragon99" },challenge: true, unauthorizedResponse: "Access denied" }));
 
 app.use((req, res, next) => {   
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 // Serve static frontend files
 app.use(express.static("public")); // Serve frontend files
 
-/*
+
 const db = mysql.createPool({
     connectionLimit: 10,
     host: process.env.DB_HOST,
@@ -38,17 +38,18 @@ const db = mysql.createPool({
     database: process.env.DB_NAME,
     multipleStatements: true // ✅ add this
 });
-*/
 
+/*
 const db = mysql.createPool({
     connectionLimit: 10,
-    host: "trolley.proxy.rlwy.net",
-    port: 39950, 
+    host: "turntable.proxy.rlwy.net",
+    port: 39457, 
     user: 'root',
-    password: "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
+    password: "JYaNxDIJrISpgzgknrubTpyTIvTKJFRv",
     database: 'railway',
     multipleStatements: true // ✅ add this
 });
+*/
 
 
 // ✅ Whenever a new connection is made, set the timezone
@@ -3816,5 +3817,4 @@ app.delete('/del-transls', (req, res) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
-
 });
