@@ -40,21 +40,33 @@ const db = mysql.createPool({
 });
 */
 
-const db = mysql.createPool({
+function createPool() {
+  const pool = mysql.createPool({
     connectionLimit: 10,
-    host: "trolley.proxy.rlwy.net",
-    port: 39950, 
-    user: 'root',
-    password: "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
-    database: 'railway',
-    multipleStatements: true // ✅ add this
-});
+    host: process.env.DB_HOST || "trolley.proxy.rlwy.net",
+    port: process.env.DB_PORT || 39950,
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "WowdwKmdRxvoGGlOrSaafNyJJzPuJLjW",
+    database: process.env.DB_NAME || "railway",
+    multipleStatements: true
+  });
 
+  pool.on("connection", (conn) => {
+    conn.query("SET time_zone = '+03:00'");
+  });
 
-// ✅ Whenever a new connection is made, set the timezone
-db.on("connection", (connection) => {
-    connection.query("SET time_zone = '+03:00'");
-});
+  pool.on("error", (err) => {
+    console.error("MySQL pool error:", err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+      console.log("Recreating MySQL pool...");
+      db = createPool(); // 🔁 recreate the pool
+    }
+  });
+
+  return pool;
+}
+
+let db = createPool();
   
 console.log('MySQL pool initialized');
 
@@ -3830,4 +3842,5 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
 
