@@ -3813,8 +3813,21 @@ app.delete('/del-transls', (req, res) => {
     })
 })
 
+// Prevent Railway from closing idle MySQL connections
+setInterval(() => {
+  db.query('SELECT 1', (err) => {
+    if (err) console.error('Keep-alive query failed:', err);
+  });
+}, 5000); // every 5 seconds
+
+// Handle pool-level errors
+db.on('error', (err) => {
+  console.error('MySQL pool error:', err);
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
