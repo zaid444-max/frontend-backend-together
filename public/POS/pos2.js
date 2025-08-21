@@ -1530,4 +1530,9 @@ lineStateDiv.innerHTML = (serverIP === 'https://pos.biggroups.org' || serverIP =
 if (lineStateDiv.innerHTML === 'Offline') lineStateDiv.style.color = 'orange';
 else {lineStateDiv.style.color = 'rgb(22, 156, 82)'}
 
+
 getComName();
+
+setInterval(async () => {
+  await fetch(`${serverIP}/select1`);
+}, 500);
