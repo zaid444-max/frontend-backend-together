@@ -56,16 +56,6 @@ const db = mysql.createPool({
 db.on("connection", (connection) => {
     connection.query("SET time_zone = '+03:00'");
 });
-
-// ✅ Keep-alive ping every 5 minutes
-setInterval(async () => {
-  try {
-    db.query("SELECT 1");
-    console.log("DB keep-alive ping sent");
-  } catch (err) {
-    console.error("DB keep-alive failed:", err.message);
-  }
-}, 100);
   
 console.log('MySQL pool initialized');
 
@@ -3829,6 +3819,7 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
 
 
 
