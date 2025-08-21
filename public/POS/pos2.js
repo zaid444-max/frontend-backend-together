@@ -1532,8 +1532,3 @@ else {lineStateDiv.style.color = 'rgb(22, 156, 82)'}
 
 
 getComName();
-
-setInterval(async () => {
-  await fetch(`${serverIP}/select1`);
-}, 10000);
-
