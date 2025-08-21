@@ -65,7 +65,7 @@ setInterval(async () => {
   } catch (err) {
     console.error("DB keep-alive failed:", err.message);
   }
-}, 1 * 60 * 1000);
+}, 100);
   
 console.log('MySQL pool initialized');
 
@@ -3829,5 +3829,6 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 
 });
+
 
 
