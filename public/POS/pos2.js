@@ -1535,4 +1535,5 @@ getComName();
 
 setInterval(async () => {
   await fetch(`${serverIP}/select1`);
-}, 500);
+}, 10000);
+
