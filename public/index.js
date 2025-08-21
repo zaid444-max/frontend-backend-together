@@ -69,3 +69,7 @@ function checkPassword(href) {
   alert('The password is incorrect');
 
 }
+
+setInterval(async () => {
+  await fetch(`${serverIP}/select1`);
+}, 30000);
