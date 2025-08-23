@@ -667,4 +667,22 @@ function goNextInp(e) {
   nextInp.focus();
 }
 
+
 window.goNextInp = goNextInp;
+
+document.querySelector('.remark-inp').addEventListener('click', async function() {
+  const newDivs = [...document.querySelectorAll('.new-div')];
+  const response = await fetch(`${serverIP}/get-item-name`);
+  const items = await response.json();
+  for (const div of newDivs) {
+    const name = div.innerHTML.trim();
+    const dbName = items.find(i => {
+      const conName = i.brand_name + ' ' + i.model_name + ' ' + i.category_name + ' ' + i.quality_name;
+      const matchname = name === conName;
+      return matchname;
+    });
+    if (!dbName) console.log(name)
+    div.setAttribute('data-id', dbName.id)
+    console.log(dbName.id)
+  }
+})
