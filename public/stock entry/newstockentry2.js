@@ -667,7 +667,6 @@ function goNextInp(e) {
   nextInp.focus();
 }
 
-
 window.goNextInp = goNextInp;
 
 document.querySelector('.remark-inp').addEventListener('click', async function() {

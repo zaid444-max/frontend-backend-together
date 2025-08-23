@@ -67,7 +67,6 @@ function checkPassword(href) {
   const userInp = prompt('Enter password: ');
   userInp === '0.0.0.' ? window.location.href = href: 
   alert('The password is incorrect');
-
 }
 
 setInterval(async () => {

@@ -1303,8 +1303,9 @@ function indicateProfit(buyPrice, realPrice, prLev, profits) {
     finalPrice = targProfit + buyPrice;
     priceProfits.length === 0 ? finalPrice = 0 : '';
     finalPrice >= realPrice ? finalPrice = realPrice : '';
-  } else {finalPrice = targProfit + realPrice;}
-  return  finalPrice;
+  } else finalPrice = targProfit + realPrice;
+  if (buyPrice === 0) finalPrice = 0;
+  return finalPrice;
   /*
   let extraProfitAmount = 0
   if (realPrice <= 2) {
@@ -1529,6 +1530,5 @@ const lineStateDiv = document.querySelector('.lineState-div');
 lineStateDiv.innerHTML = (serverIP === 'https://pos.biggroups.org' || serverIP === '') ? 'Online' : 'Offline';
 if (lineStateDiv.innerHTML === 'Offline') lineStateDiv.style.color = 'orange';
 else {lineStateDiv.style.color = 'rgb(22, 156, 82)'}
-
 
 getComName();

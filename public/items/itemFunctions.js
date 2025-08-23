@@ -29,5 +29,6 @@ export function indicateProfit(buyPrice, realPrice, prLev, profits) {
     priceProfits.length === 0 ? finalPrice = 0 : '';
     finalPrice >= realPrice ? finalPrice = realPrice : '';
   } else {finalPrice = targProfit + realPrice;}
-  return  customRound(finalPrice);
+  if (buyPrice === 0) return 0;
+  return customRound(finalPrice);
 }
