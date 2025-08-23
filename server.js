@@ -3818,10 +3818,40 @@ app.get('/select1', (req, res) => {
     res.json({ success: true })
 })
 
+app.get('/get-item-name', (req, res) => {
+    const sql = `SELECT 
+    i.id, 
+    b.name AS brand_name, 
+    m.name AS model_name, 
+    c.name AS category_name, 
+    q.name AS quality_name, 
+    i.quantity, 
+    i.buyPrice, 
+    i.priceOne, 
+    i.display_order, 
+    i.changingId, 
+    i.SKU, 
+    i.boxId, 
+    i.disable, 
+    i.noExcel, 
+    i.discription, 
+    c.circle_ball AS ball 
+    FROM items i 
+    JOIN brand b ON i.brand = b.id 
+    JOIN model m ON i.model = m.id 
+    JOIN category c ON i.category = c.id 
+    JOIN quality q ON i.quality = q.id 
+    ORDER BY i.display_order`;
+    db.query(sql, (err, items) => {
+        res.json(items)
+    })
+})
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
 
 
