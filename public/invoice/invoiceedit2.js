@@ -833,7 +833,7 @@ payButt.addEventListener('click', async () => {
       await printInvoice(isEnoughRes.newInvNum, 
       undefined, isEnoughRes.customer, isEnoughRes.delivery, isEnoughRes.loanList)
     }
-    //window.history.back();
+    window.history.back();
   } else {
     Toastify({
       text: `Please select an item to pay`,
@@ -1965,5 +1965,6 @@ document.querySelectorAll('a').forEach(link => {
     sessionStorage.removeItem('searchLoanVal');
   });
 });
+
 
 getComName();
