@@ -51,7 +51,6 @@ const db = mysql.createPool({
 });
 
 
-
 // ✅ Whenever a new connection is made, set the timezone
 db.on("connection", (connection) => {
     connection.query("SET time_zone = '+03:00'");
@@ -1052,8 +1051,39 @@ app.post('/items/pay', async (req, res) => {
                             const { amount, note, customer_id} = req.body.loanDetail;
                             db.query(sql, [amount, addedInvNum, note, customer_id], (err, result) => {
                                 if (err) {console.error('Error inserting the loan'); return res.status(500)}
+                                const sql4 = `SELECT * FROM customers WHERE id = ?; 
+                                SELECT * FROM deliveries WHERE id = ?; 
+                                SELECT * FROM loans WHERE customer_id = ?;
+                                UPDATE posinvoices set invStatus = 'Canceled2' WHERE id = ?
+                                `
+                                db.query(sql4, [req.body.custId, req.body.delId, req.body.custId, req.body.invoiceNum], (err, resultaka) => {
+                                    if (err) {console.error(err); res.status(500);}
+                                    res.json({
+                                        success: true,
+                                        newInvNum: addedInvNum,
+                                        customer: resultaka[0][0],
+                                        delivery: resultaka[1][0],
+                                        loanList: resultaka[2],
+                                    });
+                                })
                             })
-                        }
+                        } else {
+                            const sql4 = `SELECT * FROM customers WHERE id = ?; 
+                                SELECT * FROM deliveries WHERE id = ?; 
+                                SELECT * FROM loans WHERE customer_id = ?;
+                                UPDATE posinvoices set invStatus = 'Canceled2' WHERE id = ?
+                                `
+                                db.query(sql4, [req.body.custId, req.body.delId, req.body.custId, req.body.invoiceNum], (err, resultaka) => {
+                                    if (err) {console.error(err); res.status(500);}
+                                    res.json({
+                                        success: true,
+                                        newInvNum: addedInvNum,
+                                        customer: resultaka[0][0],
+                                        delivery: resultaka[1][0],
+                                        loanList: resultaka[2],
+                                    });
+                                })
+                            }
                     } else if (req.body.isInvoiceedit) {
                         if (req.body.loanCheckbox) {
                             const sql = `SELECT * FROM loans WHERE invoiceNum = ?; 
@@ -1070,40 +1100,63 @@ app.post('/items/pay', async (req, res) => {
                                     const sql = `UPDATE loans SET amount = ?, invoiceNum = ?, customer_id = ?, oldAmount = 0 WHERE id = ?`;
                                     db.query(sql, [req.body.amount, addedInvNum, custId, loanId], (err, result) => {
                                         if (err) {console.error(err);return res.status(500)}
+                                        const sql4 = `SELECT * FROM customers WHERE id = ?; 
+                                        SELECT * FROM deliveries WHERE id = ?; 
+                                        SELECT * FROM loans WHERE customer_id = ?;
+                                        UPDATE posinvoices set invStatus = 'Canceled2' WHERE id = ?
+                                        `
+                                        db.query(sql4, [req.body.custId, req.body.delId, req.body.custId, req.body.invoiceNum], (err, resultaka) => {
+                                            if (err) {console.error(err); res.status(500);}
+                                            res.json({
+                                                success: true,
+                                                newInvNum: addedInvNum,
+                                                customer: resultaka[0][0],
+                                                delivery: resultaka[1][0],
+                                                loanList: resultaka[2],
+                                            });
+                                        })
                                     });
                                 } else {
                                     const sql = 'INSERT INTO loans (amount, invoiceNum, note, customer_id) VALUES (?, ?, ?, ?)';
                                     const { amount, note, customer_id} = req.body.loanDetail;
                                     db.query(sql, [amount, addedInvNum, note, customer_id], (err, result) => {
-                                        if (err) {console.error('Error inserting the loan'); return res.status(500);}
+                                        if (err) {console.error('Error inserting the loan'); return res.status(500)}
+                                        const sql4 = `SELECT * FROM customers WHERE id = ?; 
+                                        SELECT * FROM deliveries WHERE id = ?; 
+                                        SELECT * FROM loans WHERE customer_id = ?;
+                                        UPDATE posinvoices set invStatus = 'Canceled2' WHERE id = ?
+                                        `
+                                        db.query(sql4, [req.body.custId, req.body.delId, req.body.custId, req.body.invoiceNum], (err, resultaka) => {
+                                            if (err) {console.error(err); res.status(500);}
+                                            res.json({
+                                                success: true,
+                                                newInvNum: addedInvNum,
+                                                customer: resultaka[0][0],
+                                                delivery: resultaka[1][0],
+                                                loanList: resultaka[2],
+                                            });
+                                        })
                                     })
                                 }
                             })
-                        }
-                        const sql3 = 'UPDATE posinvoices set invStatus = ? WHERE id = ?';
-                        db.query(sql3, ['Canceled2', req.body.invoiceNum], (err, result) => {
-                            if (err) {
-                                console.error('Error updating the posinvoice');
-                                return res.status(500);
-                            }
-                        })
-                    }
-                    db.query('SELECT * FROM customers WHERE id = ?', [req.body.custId], (err, customer) => {
-                        if (err) {console.error(err); res.status(500);}
-                        db.query('SELECT * FROM deliveries WHERE id = ?', [req.body.delId], (err, delivery) => {
-                            if (err) {console.error(err); res.status(500);}
-                            db.query('SELECT * FROM loans WHERE customer_id = ?', [req.body.custId], (err, loanList) => {
+                        } else {
+                            const sql4 = `SELECT * FROM customers WHERE id = ?; 
+                                SELECT * FROM deliveries WHERE id = ?; 
+                                SELECT * FROM loans WHERE customer_id = ?;
+                                UPDATE posinvoices set invStatus = 'Canceled2' WHERE id = ?
+                                `
+                            db.query(sql4, [req.body.custId, req.body.delId, req.body.custId, req.body.invoiceNum], (err, resultaka) => {
                                 if (err) {console.error(err); res.status(500);}
                                 res.json({
                                     success: true,
                                     newInvNum: addedInvNum,
-                                    customer: customer[0],
-                                    delivery: delivery[0],
-                                    loanList,
+                                    customer: resultaka[0][0],
+                                    delivery: resultaka[1][0],
+                                    loanList: resultaka[2],
                                 });
                             })
-                        })
-                    })
+                        } 
+                    }
                 })
             })
         })
@@ -3851,10 +3904,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
-
-
-
-

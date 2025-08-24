@@ -833,7 +833,7 @@ payButt.addEventListener('click', async () => {
       await printInvoice(isEnoughRes.newInvNum, 
       undefined, isEnoughRes.customer, isEnoughRes.delivery, isEnoughRes.loanList)
     }
-    window.history.back();
+    //window.history.back();
   } else {
     Toastify({
       text: `Please select an item to pay`,
@@ -908,7 +908,7 @@ async function printInvoice(invoiceId, invoiceType, customer, delivery, loanList
       const date = kurdish ? 'بە روار' : arabic ? 'التاريخ'  : 'Date';
       const total = kurdish ? 'کۆی گشتی' : arabic ? 'الإجمالي' : 'Total';
       const Discount = kurdish ? 'داشکان' : arabic ? 'الخصم' : 'Discount';
-      const netTotal = kurdish ? 'کۆتایی' : arabic ? 'بعد الخصم' : 'Net Total';
+      const netTotalLang = kurdish ? 'کۆتایی' : arabic ? 'بعد الخصم' : 'Net Total';
       const Quantity = kurdish ? 'دانە' : arabic ? 'عدد' : 'Quantity';
       const paymentStatus = kurdish ? 'دۆخی پارە دان' : arabic ? 'حالة الدفع' : 'Payment Status';
       const Cash = kurdish ? 'نە قد' : arabic ? 'نقد' : 'Cash';
@@ -960,25 +960,28 @@ async function printInvoice(invoiceId, invoiceType, customer, delivery, loanList
       let totalBalance = 0;
       const filteredLoanList = loanList.filter(loan => loan.customer_id === customer.id);
       filteredLoanList.forEach(loan => totalBalance += Number(loan.amount));
+      console.log(filteredLoanList)
       const discountVal = (Number(discountSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString();
 
       // Add footer information **only once at the end**
       doc.text(`${total}: ${(Number(totalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, rightLowerPosition, finalY);
       doc.text(`${((kurdish || arabic) && discountVal !== '0') ? '-' : ''}${Discount}: ${(kurdish || arabic) ? (discountVal.replace('-', ' ')) : discountVal}`, rightLowerPosition, finalY + 6);
-      doc.text(`${netTotal}: ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, rightLowerPosition, finalY + 12);
+      doc.text(`${netTotalLang}: ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, rightLowerPosition, finalY + 12);
       doc.text(`${Quantity}: ${totalQuantitySpan.innerText}`, rightLowerPosition, finalY + 18);
 
       doc.text(`${paymentStatus}: ${!loanCheckbox.checked ? `${Cash}` : `${Qarz}`}`, leftLowerPosition, finalY);
       const newCancelButt = document.querySelector('.new-cancel-butt');
+      const netTotal = Number(netTotalSpan.innerText.replace(/,/g, ''));
       if (invoiceType !== 'existingInvoice' && !newCancelButt) {
-        doc.text(`${OldBalance}: ${(Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 6);
+        const updatedOldBal = loanCheckbox.checked ? totalBalance - netTotal : totalBalance;
+        doc.text(`${OldBalance}: ${(Number(updatedOldBal) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 6);
         if (loanCheckbox.checked) {
-          doc.text(`${Then}: ${(Number(totalBalance) * 1000).toLocaleString()} + ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 12);
-          doc.text(`${currentBalance}: ${loanCheckbox.checked ? ((Number(totalBalance) + Number(netTotalSpan.innerText.replace(/,/g, '')))  * 1000).toLocaleString() : (Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 18);
+          doc.text(`${Then}: ${(Number(updatedOldBal) * 1000).toLocaleString()} + ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 12);
+          doc.text(`${currentBalance}: ${loanCheckbox.checked ? (Number(totalBalance)  * 1000).toLocaleString() : (Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 18);
       }
       }
       else if ((invoiceType === 'existingInvoice' || 'iPower') && newCancelButt) {
-      const netTotal = Number(netTotalSpan.innerText.replace(/,/g, ''));
+      console.log('yes2')
       const oldBalance = Number(totalBalance) - netTotal;
       doc.text(`${OldBalance}: ${((loanCheckbox.checked ? oldBalance : oldBalance + netTotal) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 6);
       if (loanCheckbox.checked) {
@@ -986,6 +989,7 @@ async function printInvoice(invoiceId, invoiceType, customer, delivery, loanList
       doc.text(`${currentBalance}: ${loanCheckbox.checked ? ((oldBalance + netTotal)  * 1000).toLocaleString() : (Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 18);
       }
       } else {
+        console.log('yes3')
         doc.text(`${OldBalance}: ${(Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 6);
         if (loanCheckbox.checked) {
         doc.text(`${Then}: ${(Number(totalBalance) * 1000).toLocaleString()} + ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 12);

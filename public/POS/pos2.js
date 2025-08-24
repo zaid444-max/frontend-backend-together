@@ -608,7 +608,7 @@ payButt.addEventListener('click', async () => {
     if (loanCheckbox.checked) {localStorage.setItem('showLoanToast', 'true');}
     const { customer, delivery, loanList } = isEnoughRes;
     if (invoiceCheckbox.checked) {
-      await printInvoice(isEnoughRes.newInvNum, customer, delivery, loanList)
+      await printInvoice(isEnoughRes.newInvNum, customer, delivery, loanList);
     }
     location.reload(true); // Reload even if PDF fails
   } else {
@@ -744,10 +744,11 @@ async function printInvoice(invoiceId, customer, delivery, loanList) {
 
       doc.text(`${paymentStatus}: ${!loanCheckbox.checked ? `${Cash}` : `${Qarz}`}`, leftLowerPosition, finalY);
       const oldBalance = Number(totalBalance);
-      doc.text(`${OldBalance}: ${(oldBalance * 1000).toLocaleString()}`, leftLowerPosition, finalY + 6);
+      const updatedOldBal = loanCheckbox.checked ? oldBalance - Number(netTotalSpan.innerText.replace(/,/g, '')) : oldBalance;
+      doc.text(`${OldBalance}: ${(updatedOldBal * 1000).toLocaleString()}`, leftLowerPosition, finalY + 6);
       if (loanCheckbox.checked) {
-        doc.text(`${Then}: ${(oldBalance * 1000).toLocaleString()} + ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 12);
-        doc.text(`${currentBalance}: ${loanCheckbox.checked ? ((oldBalance + Number(netTotalSpan.innerText.replace(/,/g, '')))  * 1000).toLocaleString() : (Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 18);
+        doc.text(`${Then}: ${((oldBalance - Number(netTotalSpan.innerText.replace(/,/g, ''))) * 1000).toLocaleString()} + ${(Number(netTotalSpan.innerText.replace(/,/g, '')) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 12);
+        doc.text(`${currentBalance}: ${loanCheckbox.checked ? (oldBalance  * 1000).toLocaleString() : (Number(totalBalance) * 1000).toLocaleString()}`, leftLowerPosition, finalY + 18);
       }
       // Save the PDF
       doc.save(`${customer.name}.pdf`); // Downloads as 'invoice.pdf'
