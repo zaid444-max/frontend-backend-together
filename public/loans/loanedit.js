@@ -145,6 +145,7 @@ function fetchLoans(loans) {
   tableTbody.innerHTML = '';
   allCustomerLoansArray.length = 0;
   loans.sort((a, b) => b.id - a.id);
+  sortFromNewsetToOledest(loans);
   for(const [index, loan] of loans.entries()) {
     const invStatus = loan?.invStatus;
     const statColor = invStatus === 'Paid' ? 'rgb(32, 190, 90);' :
@@ -234,6 +235,24 @@ function fetchLoans(loans) {
     scrollPosition = '';
   }
   filterLoans();
+}
+
+function sortFromNewsetToOledest(custLoans) {
+  custLoans.sort((a, b) => {
+    const dateA = (() => {
+      const date = a.posNowDate || a.loanNowDate;
+      const part = date.split(' ')[1].trim();
+      const [dd, mm, yyyy] = part.split('-');
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    })();
+    const dateB = (() => {
+      const date = b.posNowDate || a.loanNowDate;
+      const part = date.split(' ')[1].trim();
+      const [dd, mm, yyyy] = part.split('-');
+      return new Date(`${yyyy}-${mm}-${dd}`);
+    })();
+    return dateB - dateA;
+  });
 }
 
 async function changeWork(e, loanId) {
@@ -1090,4 +1109,5 @@ function displayToastify(text, duration = 2000, backColor = 'rgb(61, 183, 138)')
     },
     stopOnFocus: true,
   }).showToast();
+
 }
